@@ -12,11 +12,10 @@ import { MessageLog } from "../components/types/interface";
 import { useDashboard } from "../hooks/useDashboard";
 
 
-// ─── Transform API log → UI MessageLog ───────────────────────────────────────
 function transformLog(log: ApiMessageLog, idx: number): MessageLog {
   return {
     id:         idx,
-    phone:      log.phone,
+    phone:      log.phone || log.name,
     name:       log.name || "Unknown",
     incoming:   log.message,
     reply:      log.ai_reply,
