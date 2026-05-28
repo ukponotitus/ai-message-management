@@ -67,7 +67,9 @@ export function DashboardMetrics({
   topQuestions: TopQuestion[];
   statusBreakdown: StatusBreakdown;
 }) {
-  const maxQ = Math.max(...topQuestions.map((q) => q.count));
+const maxQ = topQuestions.length > 0 
+  ? Math.max(...topQuestions.map((q) => q.count)) 
+  : 1; 
   const totalStatus = statusBreakdown.replied + statusBreakdown.failed + statusBreakdown.pending;
 
   return (

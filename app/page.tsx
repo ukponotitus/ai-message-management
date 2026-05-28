@@ -1,141 +1,87 @@
 "use client";
 
-import { Box, Container, Stack, Text, Center, Loader } from "@mantine/core";
-import { DashboardHeader } from "./components/dashboard/DashboardHeader";
-import { DashboardMetrics } from "./components/dashboard/DashboardMetrics";
-import { MessageLogTable } from "./components/dashboard/MessageLogTable";
-import { Metrics, Analytics, ApiMessageLog } from "./components/types/dto";
+import { useState } from "react";
+import { Box } from "@mantine/core";
+
+import { useQueryClient as useQC } from "@tanstack/react-query";
+import { SettingsPage } from "./ SettingsPage/page";
+import { AnalyticsPage } from "./AnalyticsPage/page";
+import { BroadcastsPage } from "./BroadcastsPage/page";
+import { Sidebar } from "./components/layout/sidebar";
+import { Topbar } from "./components/layout/Topbar";
+import { ConversationsPage } from "./ConversationsPage/page";
+import { FlowsPage } from "./FlowsPage/page";
 import { useDashboard } from "./hooks/useDashboard";
-import { MessageLog, Stats } from "./components/types/interface";
+import { IntegrationsPage } from "./IntegrationsPage/page";
+import { LeadsPage } from "./LeadsPage/page";
+import { LoginPage } from "./LoginPage/page";
+import { OverviewPage } from "./OverviewPage/page";
 
+type Page =
+  | "overview" | "conversations" | "leads" | "broadcasts"
+  | "flows" | "integrations" | "analytics" | "settings";
 
-// Helper: convert "1.4s" → 1400 (milliseconds)
-function parseAvgResponseToMs(avgResponse: string): number {
-  const match = avgResponse.match(/([\d.]+)(s|ms)/);
-  if (!match) return 0;
-  const value = parseFloat(match[1]);
-  return match[2] === "s" ? value * 1000 : value;
-}
+function DashboardShell() {
+  const [activePage, setActivePage] = useState<Page>("overview");
+  const queryClient = useQC();
+  const { isRefetching } = useDashboard();
 
-// Transform API data to component props
-function transformToStats(metrics: Metrics | undefined, analytics: Analytics | undefined): Stats {
-  const defaultStats = {
-    messages_today: 0,
-    ai_replies: 0,
-    unique_contacts: 0,
-    avg_response_ms: 0,
-    reply_rate: 0,
+  const handleRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ["dashboard"] });
   };
 
-  if (!metrics) return defaultStats;
-
-  const sent = analytics?.status_breakdown?.sent || 0;
-  const failed = analytics?.status_breakdown?.failed || 0;
-  const total = sent + failed;
-  
-  return {
-    messages_today: metrics.messages_today,
-    ai_replies: sent,
-    unique_contacts: metrics.unique_contacts,
-    avg_response_ms: parseAvgResponseToMs(metrics.avg_response),
-    reply_rate: total > 0 ? Math.round((sent / total) * 100) : 100,
+  const pages: Record<Page, React.ReactNode> = {
+    overview:      <OverviewPage      />,
+    conversations: <ConversationsPage />,
+    leads:         <LeadsPage         />,
+    broadcasts:    <BroadcastsPage    />,
+    flows:         <FlowsPage         />,
+    integrations:  <IntegrationsPage  />,
+    analytics:     <AnalyticsPage     />,
+    settings:      <SettingsPage      />,
   };
+
+  return (
+    <Box style={{ display: "flex", height: "100vh", overflow: "hidden", background: "#f4f6f4" }}>
+      <Sidebar
+        activePage={activePage}
+        onNavigate={(p) => setActivePage(p as Page)}
+      />
+      <Box style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <Topbar
+          activePage={activePage}
+          lastUpdated={new Date()}
+          loading={isRefetching}
+          onRefresh={handleRefresh}
+          onNewBroadcast={() => setActivePage("broadcasts")}
+        />
+        <Box style={{ flex: 1, overflowY: "auto", padding: 24 }}>
+          {pages[activePage]}
+        </Box>
+        <Box
+          style={{
+            borderTop: "0.5px solid #d4e8d4",
+            padding: "12px 24px",
+            background: "#fff",
+            display: "flex",
+            justifyContent: "space-between",
+            flexShrink: 0,
+          }}
+        >
+          <span style={{ fontSize: 11, color: "#9ab09a" }}>AutomateNG Admin · Internal use only</span>
+          <span style={{ fontSize: 11, color: "#9ab09a" }}>Auto-refreshes every 15-30s</span>
+        </Box>
+      </Box>
+    </Box>
+  );
 }
-
-
-function transformTopQuestions(analytics: Analytics | undefined) {
-  if (!analytics) return [];
-  return analytics.top_questions.map((q) => ({
-    topic: q.label,   // API uses "label", component uses "topic"
-    count: q.count,
-  }));
-}
-
-function transformStatusBreakdown(analytics: Analytics | undefined) {
-  if (!analytics) return { replied: 0, failed: 0, pending: 0 };
-  return {
-    replied: analytics.status_breakdown.sent,
-    failed: analytics.status_breakdown.failed,
-    pending: 0,        // API doesn't have pending; adjust if needed
-  };
-}
-
-function transformMessages(apiLogs: ApiMessageLog[] | undefined): MessageLog[] {
-  if (!apiLogs) return [];
-  return apiLogs.map((log, idx) => ({
-    id: idx,
-    phone: log.phone,
-    name: log.name || "Unknown",
-    incoming: log.message,    // Corrected: matches ApiMessageLog
-    reply: log.ai_reply,      // Corrected: matches ApiMessageLog
-    status: log.status === "sent" ? "replied" : "failed",
-    created_at: log.time,
-  }));
-}
-
-const DK = "#0A0F0D";
 
 export default function AdminDashboard() {
-  const { metrics, analytics, logs, isLoading, isRefetching, error } = useDashboard();
+  const [loggedIn, setLoggedIn] = useState(false);
 
-  if (isLoading) {
-    return (
-      <Box style={{ background: DK, minHeight: "100vh" }}>
-        <Center style={{ height: "100vh" }}>
-          <Loader color="green" size="lg" />
-        </Center>
-      </Box>
-    );
+  if (!loggedIn) {
+    return <LoginPage onLogin={() => setLoggedIn(true)} />;
   }
 
-  if (error) {
-  return (
-    <Box style={{ background: DK, minHeight: "100vh", color: "#e8f5e2" }}>
-      <Center style={{ height: "100vh" }}>
-        <Stack align="center">
-          <Text c="red">Connection Error</Text>
-          {/* Use optional chaining because error might be a generic Error object */}
-          <Text size="xs" c="dimmed">{(error as any)?.message || "Check backend connection"}</Text>
-        </Stack>
-      </Center>
-    </Box>
-  );
-}
-
-  const stats = transformToStats(metrics, analytics);
-  const topQuestions = transformTopQuestions(analytics);
-  const statusBreakdown = transformStatusBreakdown(analytics);
-  const messages = transformMessages(logs);
-
-  return (
-    <Box style={{ background: DK, minHeight: "100vh", color: "#e8f5e2" }}>
-      <DashboardHeader
-        lastUpdated={new Date()}
-        loading={isRefetching}
-        onRefresh={() => {
-          // If you want manual refresh, you can use queryClient.refetchQueries()
-          // For simplicity, we'll rely on auto-refetch intervals
-        }}
-      />
-      <Container size="lg" py="xl">
-        <Stack gap={32}>
-          <DashboardMetrics
-            stats={stats}
-            topQuestions={topQuestions}
-            statusBreakdown={statusBreakdown}
-          />
-          <MessageLogTable messages={messages} />
-        </Stack>
-      </Container>
-
-      <Box style={{ borderTop: "0.5px solid rgba(255,255,255,0.05)", padding: "20px 0", marginTop: 40 }}>
-        <Container size="lg">
-          <Stack justify="space-between" style={{ flexDirection: "row" }}>
-            <Text fz={12} c="dimmed">Automate NG Admin · Internal use only</Text>
-            <Text fz={12} c="dimmed">Auto-refreshes every 15-30s</Text>
-          </Stack>
-        </Container>
-      </Box>
-    </Box>
-  );
+  return <DashboardShell />;
 }

@@ -1,7 +1,13 @@
 import axios from "axios";
-import { Metrics, Analytics, ApiMessageLog, ApiConversationDetail, } from "../components/types/dto";
+import {
+  Metrics,
+  Analytics,
+  ApiMessageLog,
+  ApiConversationDetail,
+} from "../components/types/dto";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://your-vercel-domain.com";
+const BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "https://your-vercel-domain.com";
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -10,7 +16,7 @@ const api = axios.create({
 
 export const dashboardService = {
   getMetrics: async (): Promise<Metrics> => {
-    const { data } = await api.get("/dashboard/metrics/"); // Ensure your Django urls.py matches this
+    const { data } = await api.get("/dashboard/metrics/");
     return data;
   },
   getAnalytics: async (): Promise<Analytics> => {
@@ -21,7 +27,6 @@ export const dashboardService = {
     const { data } = await api.get("/dashboard/logs/");
     return data;
   },
-
   getConversation: async (phone: string): Promise<ApiConversationDetail[]> => {
     const { data } = await api.get(`/dashboard/conversation/${phone}/`);
     return data;

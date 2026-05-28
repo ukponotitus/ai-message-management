@@ -9,16 +9,12 @@ import { ConversationHistory } from "./ConversationHistory";
 
 function StatusBadge({ status }: { status: MessageLog["status"] }) {
   const map = {
-    replied: { color: "green", icon: <IconCircleCheck size={12} /> },
-    failed: { color: "red", icon: <IconCircleX size={12} /> },
-    pending: { color: "yellow", icon: <IconAlertCircle size={12} /> },
+    replied: { color: "green", label: "Replied" },
+    failed: { color: "red", label: "Failed" },
+    pending: { color: "yellow", label: "Pending" },
   };
-  const { color, icon } = map[status];
-  return (
-    <Badge color={color} variant="light" size="sm" leftSection={icon}>
-      {status}
-    </Badge>
-  );
+  const config = map[status] || map.pending;
+  return <Badge color={config.color} variant="light">{config.label}</Badge>;
 }
 
 const MUTED = "#7a9b7e";

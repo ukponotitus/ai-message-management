@@ -2,11 +2,11 @@ export interface Metrics {
   messages_today: number;
   diff_yesterday: number;
   unique_contacts: number;
-  avg_response: string; // e.g., "1.4s"
+  avg_response: string; // "1.4s"
 }
 
 export interface ApiTopQuestion {
-  label: string; // Backend sends "label"
+  label: string;
   count: number;
 }
 
@@ -21,8 +21,8 @@ export interface Analytics {
 export interface ApiMessageLog {
   name: string;
   phone: string;
-  message: string;    // Django backend uses "message"
-  ai_reply: string;   // Django backend uses "ai_reply"
+  message: string;    // Backend key
+  ai_reply: string;   // Backend key
   time: string;
   status: "sent" | "failed";
 }
