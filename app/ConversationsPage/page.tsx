@@ -13,9 +13,11 @@ import { useDashboard } from "../hooks/useDashboard";
 
 
 function transformLog(log: ApiMessageLog, idx: number): MessageLog {
+  const bestIdentifier = log.phone || (log as any).email || log.name || "Unknown";
+
   return {
     id:         idx,
-    phone:      log.phone || log.name,
+    phone:      bestIdentifier,
     name:       log.name || "Unknown",
     incoming:   log.message,
     reply:      log.ai_reply,
