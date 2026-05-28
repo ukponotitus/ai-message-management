@@ -19,7 +19,7 @@ const ICONS: Record<string, React.ReactNode> = {
   "shopping-cart": <IconShoppingCart size={18} />,
 };
 
-export function FlowsPage() {
+export default function FlowsPage() {
   const [flows, setFlows] = useState<Flow[]>(MOCK_FLOWS);
 
   const toggle = (id: number) => {

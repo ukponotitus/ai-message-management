@@ -19,7 +19,7 @@ const ICONS: Record<string, React.ReactNode> = {
   "shopping-bag":   <IconShoppingBag   size={22} />,
 };
 
-export function IntegrationsPage() {
+export default function IntegrationsPage() {
   const [integrations, setIntegrations] = useState<Integration[]>(MOCK_INTEGRATIONS);
 
   const toggle = (id: string) => {

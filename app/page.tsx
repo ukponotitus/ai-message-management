@@ -2,20 +2,20 @@
 
 import { useState } from "react";
 import { Box } from "@mantine/core";
-
 import { useQueryClient as useQC } from "@tanstack/react-query";
-import { SettingsPage } from "./ SettingsPage/page";
-import { AnalyticsPage } from "./AnalyticsPage/page";
-import { BroadcastsPage } from "./BroadcastsPage/page";
+import AnalyticsPage  from "./AnalyticsPage/page";
 import { Sidebar } from "./components/layout/sidebar";
 import { Topbar } from "./components/layout/Topbar";
-import { ConversationsPage } from "./ConversationsPage/page";
-import { FlowsPage } from "./FlowsPage/page";
 import { useDashboard } from "./hooks/useDashboard";
-import { IntegrationsPage } from "./IntegrationsPage/page";
-import { LeadsPage } from "./LeadsPage/page";
-import { LoginPage } from "./LoginPage/page";
-import { OverviewPage } from "./OverviewPage/page";
+
+import SettingsPage from "./ SettingsPage/page";
+import BroadcastsPage from "./BroadcastsPage/page";
+import ConversationsPage from "./ConversationsPage/page";
+import FlowsPage from "./FlowsPage/page";
+import IntegrationsPage from "./IntegrationsPage/page";
+import LeadsPage from "./LeadsPage/page";
+import LoginPage from "./LoginPage/page";
+import OverviewPage from "./OverviewPage/page";
 
 type Page =
   | "overview" | "conversations" | "leads" | "broadcasts"

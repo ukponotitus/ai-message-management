@@ -7,9 +7,13 @@ import {
 } from "@mantine/core";
 import { IconDeviceFloppy, IconRefresh, IconPlus } from "@tabler/icons-react";
 
+
+
 const G    = "#00C853";
 const CARD = { background: "#fff", border: "0.5px solid #d4e8d4" };
 const LBL  = { fontSize: 11, textTransform: "uppercase" as const, letterSpacing: "0.5px", color: "#4a6a4a" };
+
+
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
@@ -144,8 +148,8 @@ function TeamSettings() {
   );
 }
 
-export function SettingsPage() {
-  return (
+export default function SettingsPage() {
+    return (
     <Tabs defaultValue="bot" color="green">
       <Tabs.List mb={20}>
         <Tabs.Tab value="bot">Bot settings</Tabs.Tab>

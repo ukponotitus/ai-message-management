@@ -39,7 +39,7 @@ function StatusBadge({ status }: { status: MessageLog["status"] }) {
   );
 }
 
-export function ConversationsPage() {
+export default function ConversationsPage() {
   const { logs, isLoading, error } = useDashboard();
   const [search, setSearch]         = useState("");
   const [filter, setFilter]         = useState("all");

@@ -77,7 +77,7 @@ function BarRow({ label, count, max, color = G }: { label: string; count: number
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export function OverviewPage() {
+export default function OverviewPage() {
   const { metrics, analytics, logs, isLoading, error } = useDashboard();
 
   if (isLoading) {

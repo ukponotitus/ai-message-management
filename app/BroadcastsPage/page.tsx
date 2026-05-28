@@ -16,7 +16,7 @@ const STATUS = {
 
 const G = "#00C853";
 
-export function BroadcastsPage() {
+export default function BroadcastsPage() {
   const [message,  setMessage]  = useState("");
   const [audience, setAudience] = useState<string | null>("all");
   const [schedule, setSchedule] = useState("");

@@ -11,12 +11,12 @@ const G = "#00C853";
 const NAV_ITEMS = [
   { label: "Overview",      icon: IconHome,         id: "overview"      },
   { label: "Conversations", icon: IconMessage,      id: "conversations" },
-  { label: "Leads",         icon: IconUsers,        id: "leads"         },
-  { label: "Broadcasts",    icon: IconSpeakerphone, id: "broadcasts"    },
-  { label: "Flows",         icon: IconGitBranch,    id: "flows"         },
-  { label: "Integrations",  icon: IconPlug,         id: "integrations"  },
-  { label: "Analytics",     icon: IconChartBar,     id: "analytics"     },
-  { label: "Settings",      icon: IconSettings,     id: "settings"      },
+  { label: "Leads",         icon: IconUsers,        id: "leads",         disabled: true },
+  { label: "Broadcasts",    icon: IconSpeakerphone, id: "broadcasts",    disabled: true },
+  { label: "Flows",         icon: IconGitBranch,    id: "flows",         disabled: true },
+  { label: "Integrations",  icon: IconPlug,         id: "integrations",  disabled: true },
+  { label: "Analytics",     icon: IconChartBar,     id: "analytics",     disabled: true },
+  { label: "Settings",      icon: IconSettings,     id: "settings",      disabled: true },
 ];
 
 interface SidebarProps {
@@ -58,28 +58,33 @@ export function Sidebar({ activePage, onNavigate }: SidebarProps) {
 
       {/* Nav items */}
       <Stack gap={2} p={8} style={{ flex: 1, overflowY: "auto" }}>
-        {NAV_ITEMS.map((item) => {
-          const active = activePage === item.id;
-          return (
-            <NavLink
-              key={item.id}
-              label={item.label}
-              leftSection={<item.icon size={17} />}
-              active={active}
-              onClick={() => onNavigate(item.id)}
-              styles={{
-                root: {
-                  borderRadius: 8,
-                  fontSize: 13,
-                  color: active ? "#00843a" : "#4a6a4a",
-                  fontWeight: active ? 500 : 400,
-                  background: active ? "#e8f8ee" : "transparent",
-                  "&:hover": { background: "#f0faf0" },
-                },
-              }}
-            />
-          );
-        })}
+      {NAV_ITEMS.map((item) => {
+  const active = activePage === item.id;
+  return (
+    <NavLink
+      key={item.id}
+      label={item.label}
+      leftSection={
+        <item.icon size={17} style={{ opacity: item.disabled ? 0.35 : 1 }} />
+      }
+      active={active}
+      disabled={item.disabled}
+      onClick={() => !item.disabled && onNavigate(item.id)}
+      styles={{
+        root: {
+          borderRadius: 8,
+          fontSize: 13,
+          color: item.disabled ? "#b0c4b0" : active ? "#00843a" : "#4a6a4a",
+          fontWeight: active ? 500 : 400,
+          background: active ? "#e8f8ee" : "transparent",
+          cursor: item.disabled ? "not-allowed" : "pointer",
+          opacity: item.disabled ? 0.5 : 1,
+          "&:hover": { background: item.disabled ? "transparent" : "#f0faf0" },
+        },
+      }}
+    />
+  );
+})}
       </Stack>
 
       {/* Footer */}

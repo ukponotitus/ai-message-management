@@ -12,7 +12,7 @@ interface LoginPageProps {
   onLogin: () => void;
 }
 
-export function LoginPage({ onLogin }: LoginPageProps) {
+export default function LoginPage({ onLogin }: LoginPageProps) {
   const [email, setEmail]       = useState("admin@automate-ng.com");
   const [password, setPassword] = useState("password");
   const [loading, setLoading]   = useState(false);

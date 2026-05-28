@@ -14,7 +14,7 @@ const TAG = {
 const initials = (name: string) =>
   name.split(" ").map((n) => n[0]).join("").toUpperCase();
 
-export function LeadsPage() {
+export default function LeadsPage() {
   const [search, setSearch] = useState("");
 
   const filtered = MOCK_LEADS.filter(

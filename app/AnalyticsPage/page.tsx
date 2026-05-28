@@ -46,7 +46,7 @@ function BarRow({ label, count, max, color = G }: { label: string; count: number
   );
 }
 
-export function AnalyticsPage() {
+export default function AnalyticsPage() {
   const maxMsg  = Math.max(...ANALYTICS_WEEKLY.messages);
   const maxResp = Math.max(...ANALYTICS_WEEKLY.response_times);
   const maxQ    = Math.max(...TOP_QUESTIONS_MOCK.map((q) => q.count));
